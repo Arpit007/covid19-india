@@ -1,9 +1,9 @@
 package main
 
 import (
-	. "covid19-india/internal/server"
+	server "covid19-india/internal"
 )
 
 func main() {
-	StartServer()
+	server.StartServer()
 }

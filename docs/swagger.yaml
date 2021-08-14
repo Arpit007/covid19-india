@@ -1,0 +1,121 @@
+basePath: /
+definitions:
+  models.CovidRegionResponse:
+    properties:
+      activeCases:
+        example: "0"
+        type: string
+      confirmedCases:
+        example: "0"
+        type: string
+      deaths:
+        example: "0"
+        type: string
+      recovered:
+        example: "0"
+        type: string
+      region:
+        type: string
+      remoteSyncTime:
+        type: string
+    type: object
+  models.DataIngestResponse:
+    properties:
+      message:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.ErrorResponse:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  models.HealthCheckResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  models.UserFeedResponse:
+    properties:
+      india:
+        $ref: '#/definitions/models.CovidRegionResponse'
+      last_updated_at:
+        type: string
+      state:
+        $ref: '#/definitions/models.CovidRegionResponse'
+    type: object
+host: localhost:8000
+info:
+  contact:
+    email: arpitbhatnagar10@gmail.com
+    name: Arpit Bhatnagar
+  description: Get covid data based on your geo-location in India
+  title: Covid 19 API Server
+  version: "1.0"
+paths:
+  /healthcheck:
+    get:
+      description: Check server's health
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.HealthCheckResponse'
+      summary: Server's health-check
+      tags:
+      - healthcheck
+  /v1/data/refresh:
+    post:
+      description: Fetches and persists India's covid 19 data in DB
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.DataIngestResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Populate Covid19 Data
+      tags:
+      - covidApi
+  /v1/user/geo:
+    get:
+      description: Get India & State's covid data based on geo-location
+      parameters:
+      - description: Latitude
+        in: query
+        name: lat
+        required: true
+        type: number
+      - description: Longitude
+        in: query
+        name: lng
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.UserFeedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get Covid Data for State
+      tags:
+      - covidApi
+swagger: "2.0"

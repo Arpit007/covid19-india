@@ -2,8 +2,8 @@ package dao
 
 import (
 	"context"
-	. "covid19-india/configs"
-	. "covid19-india/internal/models"
+	"covid19-india/internal/config"
+	"covid19-india/internal/models"
 	"github.com/kamva/mgm/v3"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -19,7 +19,7 @@ func init() {
 	err := mgm.SetDefaultConfig(
 		&mgm.Config{CtxTimeout: 10 * time.Second},
 		dbId,
-		options.Client().ApplyURI(ENV.MongoUri),
+		options.Client().ApplyURI(config.ENV.MongoUri),
 	)
 
 	if err != nil {
@@ -35,7 +35,7 @@ func getCollection() *mgm.Collection {
 	return mgm.CollectionByName(collectionId)
 }
 
-func PersistCovidData(covid3pDataset []Covid3pData) error {
+func PersistCovidData(covid3pDataset []models.Covid3pData) error {
 	ctx := getContext()
 	collection := getCollection()
 
@@ -63,7 +63,7 @@ func PersistCovidData(covid3pDataset []Covid3pData) error {
 	return nil
 }
 
-func GetCovidDataForStates(id []string) ([]CovidData, error) {
+func GetCovidDataForStates(id []string) ([]models.CovidData, error) {
 	ctx := getContext()
 	collection := getCollection()
 
@@ -80,7 +80,7 @@ func GetCovidDataForStates(id []string) ([]CovidData, error) {
 		return nil, err
 	}
 
-	var data []CovidData
+	var data []models.CovidData
 
 	if err := cursor.All(ctx, &data); err != nil {
 		return nil, err

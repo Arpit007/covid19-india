@@ -21,3 +21,12 @@ type DataIngestResponse struct {
 	Message   string    `json:"message"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
+
+type HealthCheckResponse struct {
+	Status string `json:"status"`
+}
+
+type ErrorResponse struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
+}

@@ -4,7 +4,7 @@ import (
 	"covid19-india/internal/dao"
 	"covid19-india/internal/helpers"
 	"covid19-india/internal/models"
-	"covid19-india/internal/server/utils"
+	"covid19-india/internal/utils"
 	"errors"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -20,6 +20,17 @@ func (self UserFeedController) RegisterRoutes(g *echo.Group) {
 	g.GET("/geo", self.getCovidDataByGeo)
 }
 
+// getCovidDataByGeo godoc
+// @Summary Get Covid Data for State
+// @Description Get India & State's covid data based on geo-location
+// @Tags covidApi
+// @Param lat query float32 true "Latitude"
+// @Param lng query float32 true "Longitude"
+// @Produce  json
+// @Success 201 {object} models.UserFeedResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /v1/user/geo [get]
 func (self UserFeedController) getCovidDataByGeo(c echo.Context) error {
 	lat, err := strconv.ParseFloat(c.QueryParam("lat"), 64)
 	if err != nil {

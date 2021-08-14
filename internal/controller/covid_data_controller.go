@@ -1,10 +1,10 @@
 package controller
 
 import (
-	. "covid19-india/internal/dao"
+	"covid19-india/internal/dao"
 	"covid19-india/internal/helpers"
-	. "covid19-india/internal/models"
-	"covid19-india/internal/server/utils"
+	"covid19-india/internal/models"
+	"covid19-india/internal/utils"
 	"errors"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -18,6 +18,14 @@ func (self CovidDataController) RegisterRoutes(g *echo.Group) {
 	g.POST("/refresh", self.refreshData)
 }
 
+// refreshData godoc
+// @Summary Populate Covid19 Data
+// @Description Fetches and persists India's covid 19 data in DB
+// @Tags covidApi
+// @Produce  json
+// @Success 201 {object} models.DataIngestResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /v1/data/refresh [post]
 func (self CovidDataController) refreshData(c echo.Context) error {
 	data, err := helpers.FetchCovid3pData()
 
@@ -29,10 +37,11 @@ func (self CovidDataController) refreshData(c echo.Context) error {
 		return utils.HandleError(errors.New("no covid data found from remote"), http.StatusInternalServerError, c)
 	}
 
-	if err := PersistCovidData(data); err != nil {
+	if err := dao.PersistCovidData(data); err != nil {
 		return utils.HandleError(err, http.StatusInternalServerError, c)
 	}
 
-	res := DataIngestResponse{Message: "Success", UpdatedAt: time.Now()}
-	return c.JSON(http.StatusOK, res)
+	res := models.DataIngestResponse{Message: "Success", UpdatedAt: time.Now()}
+
+	return c.JSON(http.StatusCreated, res)
 }

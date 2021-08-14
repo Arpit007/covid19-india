@@ -1,8 +1,8 @@
 package helpers
 
 import (
-	. "covid19-india/configs"
-	. "covid19-india/internal/models"
+	"covid19-india/internal/config"
+	"covid19-india/internal/models"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -11,7 +11,7 @@ import (
 )
 
 type GeoResponse struct {
-	Items []GeoPlace `json:"items"`
+	Items []models.GeoPlace `json:"items"`
 }
 
 func GetPlaceFromLatLng(lat float64, lng float64) (*GeoResponse, error) {
@@ -37,5 +37,5 @@ func GetPlaceFromLatLng(lat float64, lng float64) (*GeoResponse, error) {
 }
 
 func prepareRequestUrl(lat float64, lng float64) string {
-	return fmt.Sprintf("https://revgeocode.search.hereapi.com/v1/revgeocode?at=%f,%f&apikey=%s", lat, lng, ENV.HereMapsApiKey)
+	return fmt.Sprintf("https://revgeocode.search.hereapi.com/v1/revgeocode?at=%f,%f&apikey=%s", lat, lng, config.ENV.HereMapsApiKey)
 }

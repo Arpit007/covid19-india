@@ -1,0 +1,183 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Get covid data based on your geo-location in India",
+        "title": "Covid 19 API Server",
+        "contact": {
+            "name": "Arpit Bhatnagar",
+            "email": "arpitbhatnagar10@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8000",
+    "basePath": "/",
+    "paths": {
+        "/healthcheck": {
+            "get": {
+                "description": "Check server's health",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "healthcheck"
+                ],
+                "summary": "Server's health-check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.HealthCheckResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/data/refresh": {
+            "post": {
+                "description": "Fetches and persists India's covid 19 data in DB",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "covidApi"
+                ],
+                "summary": "Populate Covid19 Data",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.DataIngestResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/user/geo": {
+            "get": {
+                "description": "Get India \u0026 State's covid data based on geo-location",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "covidApi"
+                ],
+                "summary": "Get Covid Data for State",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "Latitude",
+                        "name": "lat",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "Longitude",
+                        "name": "lng",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.UserFeedResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.CovidRegionResponse": {
+            "type": "object",
+            "properties": {
+                "activeCases": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "confirmedCases": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "deaths": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "recovered": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "remoteSyncTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.DataIngestResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.HealthCheckResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UserFeedResponse": {
+            "type": "object",
+            "properties": {
+                "india": {
+                    "$ref": "#/definitions/models.CovidRegionResponse"
+                },
+                "last_updated_at": {
+                    "type": "string"
+                },
+                "state": {
+                    "$ref": "#/definitions/models.CovidRegionResponse"
+                }
+            }
+        }
+    }
+}
