@@ -3,49 +3,63 @@ definitions:
   models.CovidRegionResponse:
     properties:
       activeCases:
+        description: Total Active Cases
         example: "0"
         type: string
       confirmedCases:
+        description: Total Confirmed Cases
         example: "0"
         type: string
       deaths:
+        description: Total Deaths
         example: "0"
         type: string
       recovered:
+        description: Total Recovered
         example: "0"
         type: string
       region:
+        description: Data Region
         type: string
       remoteSyncTime:
+        description: Instant at which data was updated by 3rd Party Data Provider
         type: string
     type: object
   models.DataIngestResponse:
     properties:
       message:
+        description: Success Message
         type: string
       updatedAt:
+        description: Data Updated At
         type: string
     type: object
   models.ErrorResponse:
     properties:
       message:
+        description: Error Message
         type: string
       status:
+        description: Error
         type: string
     type: object
   models.HealthCheckResponse:
     properties:
       status:
+        description: Status of server
         type: string
     type: object
   models.UserFeedResponse:
     properties:
       india:
         $ref: '#/definitions/models.CovidRegionResponse'
+        description: India's covid data
       last_updated_at:
+        description: Data last updated at
         type: string
       state:
         $ref: '#/definitions/models.CovidRegionResponse'
+        description: State's covid data
     type: object
 host: localhost:8000
 info:

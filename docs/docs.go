@@ -126,25 +126,31 @@ var doc = `{
             "type": "object",
             "properties": {
                 "activeCases": {
+                    "description": "Total Active Cases",
                     "type": "string",
                     "example": "0"
                 },
                 "confirmedCases": {
+                    "description": "Total Confirmed Cases",
                     "type": "string",
                     "example": "0"
                 },
                 "deaths": {
+                    "description": "Total Deaths",
                     "type": "string",
                     "example": "0"
                 },
                 "recovered": {
+                    "description": "Total Recovered",
                     "type": "string",
                     "example": "0"
                 },
                 "region": {
+                    "description": "Data Region",
                     "type": "string"
                 },
                 "remoteSyncTime": {
+                    "description": "Instant at which data was updated by 3rd Party Data Provider",
                     "type": "string"
                 }
             }
@@ -153,9 +159,11 @@ var doc = `{
             "type": "object",
             "properties": {
                 "message": {
+                    "description": "Success Message",
                     "type": "string"
                 },
                 "updatedAt": {
+                    "description": "Data Updated At",
                     "type": "string"
                 }
             }
@@ -164,9 +172,11 @@ var doc = `{
             "type": "object",
             "properties": {
                 "message": {
+                    "description": "Error Message",
                     "type": "string"
                 },
                 "status": {
+                    "description": "Error",
                     "type": "string"
                 }
             }
@@ -175,6 +185,7 @@ var doc = `{
             "type": "object",
             "properties": {
                 "status": {
+                    "description": "Status of server",
                     "type": "string"
                 }
             }
@@ -183,12 +194,15 @@ var doc = `{
             "type": "object",
             "properties": {
                 "india": {
+                    "description": "India's covid data",
                     "$ref": "#/definitions/models.CovidRegionResponse"
                 },
                 "last_updated_at": {
+                    "description": "Data last updated at",
                     "type": "string"
                 },
                 "state": {
+                    "description": "State's covid data",
                     "$ref": "#/definitions/models.CovidRegionResponse"
                 }
             }
