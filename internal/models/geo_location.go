@@ -17,3 +17,7 @@ type GeoPlace struct {
 	ID      string  `json:"id"`
 	Address Address `json:"address"`
 }
+
+type GeoResponse struct {
+	Items []GeoPlace `json:"items"`
+}

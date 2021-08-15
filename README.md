@@ -10,4 +10,7 @@ Variable | Description
 PORT | Port of server
 MONGODB_URI | MongoDb connection URI
 HERE_MAPS_API_KEY | HERE Map's reverse geo coding API Key ([here](https://developer.here.com/documentation/geocoder/dev_guide/topics/resource-reverse-geocode.html))
+REDIS_URI | Redis connection URI
+REDIS_PASSWORD | Redis server's password
+
 - Run the file [main.go](https://github.com/Arpit007/covid19-india/blob/master/cmd/covid19-india/main.go)

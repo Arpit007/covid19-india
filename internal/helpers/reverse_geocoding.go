@@ -3,37 +3,29 @@ package helpers
 import (
 	"covid19-india/internal/config"
 	"covid19-india/internal/models"
-	"encoding/json"
+	"covid19-india/internal/utils"
 	"errors"
 	"fmt"
-	"net/http"
 	"time"
 )
 
-type GeoResponse struct {
-	Items []models.GeoPlace `json:"items"`
-}
-
-func GetPlaceFromLatLng(lat float64, lng float64) (*GeoResponse, error) {
-	client := &http.Client{Timeout: time.Second * 5}
+func GetPlaceFromLatLng(lat float64, lng float64, out *models.GeoResponse) error {
+	client := utils.GetClient(time.Second * 5)
 
 	res, err := client.Get(prepareRequestUrl(lat, lng))
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	defer res.Body.Close()
-
-	var geoResponse GeoResponse
-	if err := json.NewDecoder(res.Body).Decode(&geoResponse); err != nil {
-		return nil, err
+	if err := utils.DecodeResponseBody(res, out); err != nil {
+		return err
 	}
 
-	if len(geoResponse.Items) == 0 {
-		return nil, errors.New("unable to decode location")
+	if len(out.Items) == 0 {
+		return errors.New("unable to decode location")
 	}
 
-	return &geoResponse, nil
+	return nil
 }
 
 func prepareRequestUrl(lat float64, lng float64) string {
