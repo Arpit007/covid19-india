@@ -9,6 +9,7 @@ import (
 	"covid19-india/internal/utils"
 	"errors"
 	"github.com/labstack/echo/v4"
+	"github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
 	"time"
@@ -49,11 +50,14 @@ func (self CovidDataController) refreshData(c echo.Context) error {
 		return utils.HandleError(err, http.StatusInternalServerError, c)
 	}
 
-	if err := cache.ResetCovidDataCache(covidData); err != nil {
-		return utils.HandleError(err, http.StatusInternalServerError, c)
-	}
+	go func() {
+		if err := cache.ResetCovidDataCache(covidData); err != nil {
+			logrus.Error("Error resetting cache ", err)
+		}
+	}()
 
-	res := models.DataIngestResponse{Message: "Data ingested successfully", UpdatedAt: time.Now()}
+	updatedAt := time.Now().In(transformers.IstTimeZone).Format(time.RFC1123)
+	res := models.DataIngestResponse{Message: "Data ingested successfully", UpdatedAt: updatedAt}
 
 	return c.JSON(http.StatusCreated, res)
 }

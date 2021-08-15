@@ -6,20 +6,37 @@ import (
 	"encoding/json"
 	"github.com/go-redis/redis/v8"
 	"github.com/sirupsen/logrus"
+	"net/url"
 	"time"
 )
 
 var redisClient *redis.Client
 
 func init() {
+	u, err := url.Parse(config.ENV.RedisUri)
+
+	if err != nil {
+		logrus.Fatal("Error parsing redis uri ", err)
+	}
+
+	var password string
+	p, isSet := u.User.Password()
+
+	if isSet {
+		password = p
+	} else {
+		password = ""
+	}
+
 	redisClient = redis.NewClient(&redis.Options{
-		Addr:     config.ENV.RedisUri,
-		Password: config.ENV.RedisPassword,
+		Addr:     u.Host,
+		Username: u.User.Username(),
+		Password: password,
 		DB:       0,
 	})
 
 	if _, err := redisClient.Ping(context.TODO()).Result(); err != nil {
-		logrus.Fatal("Unable to connect to Redis: " + err.Error())
+		logrus.Fatal("Unable to connect to Redis: ", err)
 	}
 }
 
@@ -55,7 +72,7 @@ func (rCache *RedisCache) Get(ctx context.Context, key string, v interface{}, ca
 		return nil, err
 	}
 
-	rCache.set(ctx, rKey, data) // update the cache
+	go rCache.set(ctx, rKey, data) // update the cache
 
 	return data, nil
 }

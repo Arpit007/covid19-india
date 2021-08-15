@@ -1,6 +1,15 @@
 package transformers
 
-import "covid19-india/internal/models"
+import (
+	"covid19-india/internal/models"
+	"time"
+)
+
+var IstTimeZone *time.Location
+
+func init() {
+	IstTimeZone, _ = time.LoadLocation("Asia/Kolkata")
+}
 
 // ToCovidRegionResponse Transform CovidData to API response CovidRegionResponse
 func ToCovidRegionResponse(data *models.CovidData) *models.CovidRegionResponse {
@@ -10,7 +19,7 @@ func ToCovidRegionResponse(data *models.CovidData) *models.CovidRegionResponse {
 		ConfirmedCases: data.ConfirmedCases,
 		Deaths:         data.Deaths,
 		Recovered:      data.Recovered,
-		RemoteSyncTime: data.RemoteSyncTime,
+		RemoteSyncTime: data.RemoteSyncTime.In(IstTimeZone).Format(time.RFC1123),
 	}
 }
 
@@ -31,6 +40,6 @@ func ToGeoCovidDataResponse(covidData []models.CovidData) *models.GeoCovidDataRe
 	return &models.GeoCovidDataResponse{
 		India:         *ToCovidRegionResponse(&indiaData),
 		State:         *ToCovidRegionResponse(&stateData),
-		LastUpdatedAt: indiaData.UpdatedAt,
+		LastUpdatedAt: indiaData.UpdatedAt.In(IstTimeZone).Format(time.RFC1123),
 	}
 }

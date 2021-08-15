@@ -11,7 +11,6 @@ type AppConfig struct {
 	MongoUri       string
 	HereMapsApiKey string
 	RedisUri       string
-	RedisPassword  string
 }
 
 var ENV *AppConfig
@@ -22,7 +21,6 @@ func init() {
 		MongoUri:       GetMandatoryEnvValue("MONGODB_URI"),
 		HereMapsApiKey: GetMandatoryEnvValue("HERE_MAPS_API_KEY"),
 		RedisUri:       GetMandatoryEnvValue("REDIS_URI"),
-		RedisPassword:  GetEnvValue("REDIS_PASSWORD"),
 	}
 }
 
