@@ -8,6 +8,5 @@ FROM alpine:3.14.1
 RUN adduser -S -D -H -h /app appuser
 USER appuser
 COPY --from=builder app/build/covid19-india /app/
-COPY --from=builder app/docs/ /app/docs
 WORKDIR /app
 CMD ["./covid19-india"]

@@ -1,15 +1,17 @@
 # covid19-india
-Api Server to get Covid cases in a user's State & in India on the basis of their geo-location.
 
-## Running the Server
-- Install the Go dependencies
-- Expose environment variables
+## Introduction
+Api Server to get Covid cases in a user's State and in India on the basis of their geo-location.
 
-Variable | Description
----| --- |
-PORT | Port of server
-MONGODB_URI | MongoDb connection URI
-HERE_MAPS_API_KEY | HERE Map's reverse geocoding API Key ([here](https://developer.here.com/documentation/geocoder/dev_guide/topics/resource-reverse-geocode.html))
-REDIS_URI | Redis connection URI
 
+### 3rd Party APIs
+
+- Covid Data: [MoHFW](https://www.mohfw.gov.in/data/datanew.json)
+- Reverse geocoding: [Here Maps](https://developer.here.com/documentation/geocoder/dev_guide/topics/resource-reverse-geocode.html)
+
+
+## Installation
+- Clone the repo
+- Install the dependencies
+- Refer `.env.sample` and expose the environment variables
 - Run the file [main.go](https://github.com/Arpit007/covid19-india/blob/master/cmd/covid19-india/main.go)
