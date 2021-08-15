@@ -15,3 +15,6 @@ Api Server to get Covid cases in a user's State and in India on the basis of the
 - Install the dependencies
 - Refer `.env.sample` and expose the environment variables
 - Run the file [main.go](https://github.com/Arpit007/covid19-india/blob/master/cmd/covid19-india/main.go)
+
+## Demo
+Deployed App: [Heroku](https://cov19-india.herokuapp.com/swagger/index.htm) 

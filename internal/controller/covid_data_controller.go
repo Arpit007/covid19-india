@@ -85,7 +85,8 @@ func (self CovidDataController) getCovidDataByGeo(c echo.Context) error {
 	}
 
 	// Fetch user's state from geo-coordinates
-	state, err := cache.GetStateFromLatLong(lat, lng)
+	//state, err := cache.GetStateFromLatLong(lat, lng)
+	state, err := helpers.GetStateFromLatLong(lat, lng)
 
 	if err != nil {
 		return utils.HandleError(err, http.StatusInternalServerError, c)
