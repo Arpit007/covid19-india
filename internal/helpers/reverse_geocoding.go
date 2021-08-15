@@ -9,23 +9,40 @@ import (
 	"time"
 )
 
-func GetPlaceFromLatLng(lat float64, lng float64, out *models.GeoResponse) error {
+func GetPlaceFromLatLng(lat float64, lng float64) (*models.GeoResponse, error) {
 	client := utils.GetClient(time.Second * 5)
 
 	res, err := client.Get(prepareRequestUrl(lat, lng))
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	if err := utils.DecodeResponseBody(res, out); err != nil {
-		return err
+	var data models.GeoResponse
+	if err := utils.DecodeResponseBody(res, &data); err != nil {
+		return nil, err
 	}
 
-	if len(out.Items) == 0 {
-		return errors.New("unable to decode location")
+	if len(data.Items) == 0 {
+		return nil, errors.New("unable to decode location")
 	}
 
-	return nil
+	return &data, nil
+}
+
+func GetStateFromLatLong(lat float64, lng float64) (string, error) {
+	place, err := GetPlaceFromLatLng(lat, lng)
+
+	if err != nil {
+		return "", err
+	}
+
+	state := place.Items[0].Address.State
+
+	if len(state) == 0 {
+		return "", errors.New("unable to identify state")
+	}
+
+	return state, nil
 }
 
 func prepareRequestUrl(lat float64, lng float64) string {

@@ -2,31 +2,27 @@ package helpers
 
 import (
 	"covid19-india/internal/models"
-	"encoding/json"
+	"covid19-india/internal/utils"
 	"errors"
-	"net/http"
 	"time"
 )
 
 func FetchCovid3pData() ([]models.Covid3pData, error) {
-	client := &http.Client{Timeout: time.Second * 10}
+	client := utils.GetClient(time.Second * 10)
 
 	res, err := client.Get("https://data.covid19india.org/data.json")
 	if err != nil {
 		return nil, err
 	}
 
-	defer res.Body.Close()
-
-	var covidDataResponse models.Covid3pDataResponse
-
-	if err := json.NewDecoder(res.Body).Decode(&covidDataResponse); err != nil {
+	var data models.Covid3pDataResponse
+	if err := utils.DecodeResponseBody(res, &data); err != nil {
 		return nil, err
 	}
 
-	if len(covidDataResponse.StateWise) == 0 {
+	if len(data.StateWise) == 0 {
 		return nil, errors.New("unable to fetch covid 19 data")
 	}
 
-	return covidDataResponse.StateWise, nil
+	return data.StateWise, nil
 }

@@ -28,7 +28,7 @@ type RedisCache struct {
 	prefix string
 }
 
-type FetchCallback func(out interface{}) error
+type FetchCallback func() (interface{}, error)
 
 func CreateRedisCache(ttl time.Duration, prefix string) *RedisCache {
 	return &RedisCache{
@@ -37,22 +37,28 @@ func CreateRedisCache(ttl time.Duration, prefix string) *RedisCache {
 	}
 }
 
-func (rCache *RedisCache) Get(ctx context.Context, key string, out interface{}, callback FetchCallback) error {
-	rKey := rCache.prefix + ":" + key
+func (rCache *RedisCache) Get(ctx context.Context, key string, v interface{}, callback FetchCallback) (interface{}, error) {
+	rKey := rCache.prepareKey(key)
 
 	if res, err := redisClient.Get(ctx, rKey).Bytes(); err == nil {
-		if err := json.Unmarshal(res, out); err == nil {
-			return nil
+		if err := json.Unmarshal(res, v); err == nil {
+			return v, nil
 		}
 	}
 
-	if err := callback(out); err != nil {
-		return err
+	data, err := callback()
+
+	if err != nil {
+		return nil, err
 	}
 
-	rCache.set(ctx, rKey, out)
+	rCache.set(ctx, rKey, data)
 
-	return nil
+	return data, nil
+}
+
+func (rCache *RedisCache) prepareKey(key string) string {
+	return rCache.prefix + ":" + key
 }
 
 func (rCache *RedisCache) set(ctx context.Context, key string, v interface{}) {
@@ -66,4 +72,18 @@ func (rCache *RedisCache) set(ctx context.Context, key string, v interface{}) {
 	if _, err := redisClient.SetEX(ctx, key, data, rCache.ttl).Result(); err != nil {
 		logrus.Error("Failed to update cache item " + key)
 	}
+}
+
+func (rCache *RedisCache) RemoveKeys(ctx context.Context, keys []string) error {
+	var rKeys []string
+
+	for _, key := range keys {
+		rKeys = append(rKeys, rCache.prepareKey(key))
+	}
+
+	if _, err := redisClient.Del(ctx, rKeys...).Result(); err != nil {
+		return err
+	}
+
+	return nil
 }

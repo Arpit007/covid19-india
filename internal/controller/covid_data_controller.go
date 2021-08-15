@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"covid19-india/internal/cache"
 	"covid19-india/internal/dao"
 	"covid19-india/internal/helpers"
 	"covid19-india/internal/models"
@@ -37,7 +38,13 @@ func (self CovidDataController) refreshData(c echo.Context) error {
 		return utils.HandleError(errors.New("no covid data found from remote"), http.StatusInternalServerError, c)
 	}
 
-	if err := dao.PersistCovidData(data); err != nil {
+	covidData, err := dao.PersistCovidData(data)
+
+	if err != nil {
+		return utils.HandleError(err, http.StatusInternalServerError, c)
+	}
+
+	if err := cache.ResetCovidDataCache(covidData); err != nil {
 		return utils.HandleError(err, http.StatusInternalServerError, c)
 	}
 

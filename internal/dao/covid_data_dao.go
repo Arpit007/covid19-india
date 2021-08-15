@@ -4,6 +4,7 @@ import (
 	"context"
 	"covid19-india/internal/config"
 	"covid19-india/internal/models"
+	"errors"
 	"github.com/kamva/mgm/v3"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -35,43 +36,53 @@ func getCollection() *mgm.Collection {
 	return mgm.CollectionByName(collectionId)
 }
 
-func PersistCovidData(covid3pDataset []models.Covid3pData) error {
+func PersistCovidData(covid3pDataset []models.Covid3pData) ([]models.CovidData, error) {
 	ctx := getContext()
 	collection := getCollection()
 
+	var covidData []models.CovidData
 	var operations []mongo.WriteModel
 
 	for _, covid3pData := range covid3pDataset {
-		covidData, err := covid3pData.ToCovidData()
+		data, err := covid3pData.ToCovidData()
 
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		operation := mongo.NewUpdateOneModel()
-		operation.SetFilter(bson.M{"region": covidData.Region})
-		operation.SetUpdate(bson.M{"$set": covidData})
+		operation.SetFilter(bson.M{"region": data.Region})
+		operation.SetUpdate(bson.M{"$set": data})
 		operation.SetUpsert(true)
 
 		operations = append(operations, operation)
+		covidData = append(covidData, *data)
 	}
 
 	if _, err := collection.BulkWrite(ctx, operations); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return covidData, nil
 }
 
-func GetCovidDataForStates(id []string) ([]models.CovidData, error) {
+func GetCovidDataForRegions(id []string) ([]models.CovidData, error) {
 	ctx := getContext()
 	collection := getCollection()
 
 	var operations []bson.M
 
 	for _, id := range id {
+		if len(id) == 0 {
+			continue
+		}
+
 		operation := bson.M{"region": id}
 		operations = append(operations, operation)
+	}
+
+	if len(operations) == 0 {
+		return nil, errors.New("no region found")
 	}
 
 	cursor, err := collection.Find(ctx, bson.M{"$or": operations})
@@ -87,4 +98,21 @@ func GetCovidDataForStates(id []string) ([]models.CovidData, error) {
 	}
 
 	return data, nil
+}
+
+func GetCovidDataForRegion(id string) (*models.CovidData, error) {
+	ctx := getContext()
+	collection := getCollection()
+
+	if len(id) == 0 {
+		return nil, nil
+	}
+
+	var data models.CovidData
+
+	if err := collection.FindOne(ctx, bson.M{"region": id}).Decode(&data); err != nil {
+		return nil, err
+	}
+
+	return &data, nil
 }

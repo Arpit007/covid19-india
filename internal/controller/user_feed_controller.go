@@ -2,7 +2,6 @@ package controller
 
 import (
 	"covid19-india/internal/cache"
-	"covid19-india/internal/dao"
 	"covid19-india/internal/models"
 	"covid19-india/internal/utils"
 	"errors"
@@ -42,14 +41,13 @@ func (self UserFeedController) getCovidDataByGeo(c echo.Context) error {
 		return utils.HandleError(errors.New("invalid longitude"), http.StatusBadRequest, c)
 	}
 
-	var location models.GeoResponse
-	if _, err = cache.GetPlaceFromLatLng(lat, lng, &location); err != nil {
+	state, err := cache.GetStateFromLatLong(lat, lng)
+
+	if err != nil {
 		return utils.HandleError(err, http.StatusInternalServerError, c)
 	}
 
-	state := location.Items[0].Address.State
-
-	data, err := dao.GetCovidDataForStates([]string{state, indiaRegion})
+	data, err := cache.GetCovidDataForRegions([]string{state, indiaRegion})
 
 	if err != nil {
 		return utils.HandleError(err, http.StatusInternalServerError, c)
