@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// GetPlaceFromLatLng Fetches user's location info from geo coordinates
 func GetPlaceFromLatLng(lat float64, lng float64) (*models.GeoResponse, error) {
 	client := utils.GetClient(time.Second * 5)
 
@@ -29,6 +30,7 @@ func GetPlaceFromLatLng(lat float64, lng float64) (*models.GeoResponse, error) {
 	return &data, nil
 }
 
+// GetStateFromLatLong Fetches user's state from geo coordinates
 func GetStateFromLatLong(lat float64, lng float64) (string, error) {
 	place, err := GetPlaceFromLatLng(lat, lng)
 

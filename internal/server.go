@@ -3,7 +3,7 @@ package internal
 import (
 	_ "covid19-india/docs"
 	"covid19-india/internal/config"
-	controller2 "covid19-india/internal/controller"
+	"covid19-india/internal/controller"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -11,10 +11,10 @@ import (
 	_ "github.com/swaggo/swag"
 )
 
+// StartServer godoc
 // @title Covid 19 API Server
 // @version 1.0
 // @description Get covid data based on your geo-location in India
-
 // @contact.name Arpit Bhatnagar
 // @contact.email arpitbhatnagar10@gmail.com
 // @host localhost:8000
@@ -38,7 +38,9 @@ func StartServer() {
 }
 
 func registerRoutes(e *echo.Echo) {
+	// Register Swagger routes
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
-	new(controller2.IndexController).RegisterRoutes(e)
+	// Register Index Controller
+	new(controller.IndexController).RegisterRoutes(e)
 }

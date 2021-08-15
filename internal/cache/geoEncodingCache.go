@@ -3,7 +3,6 @@ package cache
 import (
 	"context"
 	"covid19-india/internal/helpers"
-	"errors"
 	"fmt"
 	"time"
 )
@@ -16,10 +15,12 @@ func init() {
 
 type geoState map[string]string
 
+// GetStateFromLatLong Fetches user's state (from geo coordinates) from cache
 func GetStateFromLatLong(lat float64, lng float64) (string, error) {
 	key := fmt.Sprintf("%f,%f", lat, lng)
 
 	res, err := geoCache.Get(context.TODO(), key, &geoState{}, func() (interface{}, error) {
+		// cache miss
 		if state, err := helpers.GetStateFromLatLong(lat, lng); err != nil {
 			return nil, err
 		} else {
@@ -29,10 +30,6 @@ func GetStateFromLatLong(lat float64, lng float64) (string, error) {
 
 	if err != nil {
 		return "", err
-	}
-
-	if res == nil {
-		return "", errors.New("unable to decode location")
 	}
 
 	var data = *res.(*geoState)

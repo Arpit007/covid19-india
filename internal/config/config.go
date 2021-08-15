@@ -18,16 +18,17 @@ var ENV *AppConfig
 
 func init() {
 	ENV = &AppConfig{
-		Port:           getReqdEnvValue("PORT"),
-		MongoUri:       getReqdEnvValue("MONGODB_URI"),
-		HereMapsApiKey: getReqdEnvValue("HERE_MAPS_API_KEY"),
-		RedisUri:       getReqdEnvValue("REDIS_URI"),
-		RedisPassword:  getEnvValue("REDIS_PASSWORD"),
+		Port:           GetMandatoryEnvValue("PORT"),
+		MongoUri:       GetMandatoryEnvValue("MONGODB_URI"),
+		HereMapsApiKey: GetMandatoryEnvValue("HERE_MAPS_API_KEY"),
+		RedisUri:       GetMandatoryEnvValue("REDIS_URI"),
+		RedisPassword:  GetEnvValue("REDIS_PASSWORD"),
 	}
 }
 
-func getReqdEnvValue(key string) string {
-	value := getEnvValue(key)
+// GetMandatoryEnvValue Get Mandatory Environment value. Fatal if it is not present
+func GetMandatoryEnvValue(key string) string {
+	value := GetEnvValue(key)
 
 	if len(value) == 0 {
 		log.Fatal(fmt.Sprintf("Cannot find env variable %s", key))
@@ -36,7 +37,8 @@ func getReqdEnvValue(key string) string {
 	return value
 }
 
-func getEnvValue(key string) string {
+// GetEnvValue Get optional environment value
+func GetEnvValue(key string) string {
 	value := os.Getenv(key)
 
 	return value

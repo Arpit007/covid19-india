@@ -1,5 +1,6 @@
 package models
 
+// Address 3rd Party Reverse geocoding response model
 type Address struct {
 	Label       string `json:"label"`
 	CountryCode string `json:"countryCode"`
@@ -12,12 +13,14 @@ type Address struct {
 	PostalCode  string `json:"postalCode"`
 }
 
+// GeoPlace 3rd Party Reverse geocoding response model
 type GeoPlace struct {
 	Title   string  `json:"title"`
 	ID      string  `json:"id"`
 	Address Address `json:"address"`
 }
 
+// GeoResponse 3rd Party Reverse geocoding response
 type GeoResponse struct {
 	Items []GeoPlace `json:"items"`
 }

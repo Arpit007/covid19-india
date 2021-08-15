@@ -2,6 +2,8 @@ package models
 
 import "time"
 
+// Covid3pData 3rd party API Model
+// Provides Covid data for a given state/region
 type Covid3pData struct {
 	Active          int64  `json:"active,string,omitempty"`
 	Confirmed       int64  `json:"confirmed,string,omitempty"`
@@ -17,10 +19,12 @@ type Covid3pData struct {
 	StateNotes      string `json:"statenotes"`
 }
 
+// Covid3pDataResponse 3rd party API response model
 type Covid3pDataResponse struct {
 	StateWise []Covid3pData `json:"statewise"`
 }
 
+// ToCovidData Transform 3rd party API model to app's covid data model
 func (data *Covid3pData) ToCovidData() (*CovidData, error) {
 	syncTime, err := time.Parse("02/01/2006 15:04:05", data.LastUpdatedTime)
 	currentTime := time.Now()
@@ -31,6 +35,7 @@ func (data *Covid3pData) ToCovidData() (*CovidData, error) {
 
 	var region string
 
+	// 3rd Party treats India level data same as state level data, with the State name as "Total"
 	if data.State == "Total" {
 		region = "India"
 	} else {
@@ -43,7 +48,7 @@ func (data *Covid3pData) ToCovidData() (*CovidData, error) {
 		ConfirmedCases: data.Confirmed,
 		Deaths:         data.Deaths,
 		Recovered:      data.Recovered,
-		RemoteSyncTime: syncTime,
+		RemoteSyncTime: syncTime, // Time at which 3rd party updated their data
 		CreatedAt:      currentTime,
 		UpdatedAt:      currentTime,
 	}

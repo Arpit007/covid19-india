@@ -15,7 +15,6 @@ func (self IndexController) RegisterRoutes(e *echo.Echo) {
 
 	// Register Controllers
 	new(CovidDataController).RegisterRoutes(e.Group("/v1/data"))
-	new(UserFeedController).RegisterRoutes(e.Group("/v1/user"))
 }
 
 // healthCheck godoc

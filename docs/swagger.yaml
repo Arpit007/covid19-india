@@ -28,7 +28,7 @@ definitions:
   models.DataIngestResponse:
     properties:
       message:
-        description: Success Message
+        description: Message
         type: string
       updatedAt:
         description: Data Updated At
@@ -43,13 +43,7 @@ definitions:
         description: Error
         type: string
     type: object
-  models.HealthCheckResponse:
-    properties:
-      status:
-        description: Status of server
-        type: string
-    type: object
-  models.UserFeedResponse:
+  models.GeoCovidDataResponse:
     properties:
       india:
         $ref: '#/definitions/models.CovidRegionResponse'
@@ -60,6 +54,12 @@ definitions:
       state:
         $ref: '#/definitions/models.CovidRegionResponse'
         description: State's covid data
+    type: object
+  models.HealthCheckResponse:
+    properties:
+      status:
+        description: Status of server
+        type: string
     type: object
 host: localhost:8000
 info:
@@ -83,24 +83,7 @@ paths:
       summary: Server's health-check
       tags:
       - healthcheck
-  /v1/data/refresh:
-    post:
-      description: Fetches and persists India's covid 19 data in DB
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.DataIngestResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Populate Covid19 Data
-      tags:
-      - covidApi
-  /v1/user/geo:
+  /v1/data/geo:
     get:
       description: Get India & State's covid data based on geo-location
       parameters:
@@ -120,7 +103,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.UserFeedResponse'
+            $ref: '#/definitions/models.GeoCovidDataResponse'
         "400":
           description: Bad Request
           schema:
@@ -130,6 +113,23 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Get Covid Data for State
+      tags:
+      - covidApi
+  /v1/data/refresh:
+    post:
+      description: Fetches and persists India's covid 19 data in DB
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.DataIngestResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Populate Covid19 Data
       tags:
       - covidApi
 swagger: "2.0"

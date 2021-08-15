@@ -46,33 +46,7 @@ var doc = `{
                 }
             }
         },
-        "/v1/data/refresh": {
-            "post": {
-                "description": "Fetches and persists India's covid 19 data in DB",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "covidApi"
-                ],
-                "summary": "Populate Covid19 Data",
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.DataIngestResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/user/geo": {
+        "/v1/data/geo": {
             "get": {
                 "description": "Get India \u0026 State's covid data based on geo-location",
                 "produces": [
@@ -102,13 +76,39 @@ var doc = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.UserFeedResponse"
+                            "$ref": "#/definitions/models.GeoCovidDataResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/data/refresh": {
+            "post": {
+                "description": "Fetches and persists India's covid 19 data in DB",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "covidApi"
+                ],
+                "summary": "Populate Covid19 Data",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.DataIngestResponse"
                         }
                     },
                     "500": {
@@ -159,7 +159,7 @@ var doc = `{
             "type": "object",
             "properties": {
                 "message": {
-                    "description": "Success Message",
+                    "description": "Message",
                     "type": "string"
                 },
                 "updatedAt": {
@@ -181,16 +181,7 @@ var doc = `{
                 }
             }
         },
-        "models.HealthCheckResponse": {
-            "type": "object",
-            "properties": {
-                "status": {
-                    "description": "Status of server",
-                    "type": "string"
-                }
-            }
-        },
-        "models.UserFeedResponse": {
+        "models.GeoCovidDataResponse": {
             "type": "object",
             "properties": {
                 "india": {
@@ -204,6 +195,15 @@ var doc = `{
                 "state": {
                     "description": "State's covid data",
                     "$ref": "#/definitions/models.CovidRegionResponse"
+                }
+            }
+        },
+        "models.HealthCheckResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "description": "Status of server",
+                    "type": "string"
                 }
             }
         }

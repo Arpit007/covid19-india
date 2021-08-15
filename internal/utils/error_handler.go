@@ -6,6 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// HandleError Log & sGenerate error message response
 func HandleError(err error, code int, c echo.Context) error {
 	log.Error(err)
 

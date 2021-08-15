@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// FetchCovid3pData Fetches Covid Data from 3rd Party API
 func FetchCovid3pData() ([]models.Covid3pData, error) {
 	client := utils.GetClient(time.Second * 10)
 

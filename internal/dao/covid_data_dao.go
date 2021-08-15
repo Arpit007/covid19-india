@@ -36,6 +36,7 @@ func getCollection() *mgm.Collection {
 	return mgm.CollectionByName(collectionId)
 }
 
+// PersistCovidData Bulk persist all covid data
 func PersistCovidData(covid3pDataset []models.Covid3pData) ([]models.CovidData, error) {
 	ctx := getContext()
 	collection := getCollection()
@@ -66,6 +67,7 @@ func PersistCovidData(covid3pDataset []models.Covid3pData) ([]models.CovidData, 
 	return covidData, nil
 }
 
+// GetCovidDataForRegions Get covid data for multiple regions
 func GetCovidDataForRegions(id []string) ([]models.CovidData, error) {
 	ctx := getContext()
 	collection := getCollection()
@@ -100,17 +102,18 @@ func GetCovidDataForRegions(id []string) ([]models.CovidData, error) {
 	return data, nil
 }
 
-func GetCovidDataForRegion(id string) (*models.CovidData, error) {
+// GetCovidDataForRegion Get covid data for a region
+func GetCovidDataForRegion(region string) (*models.CovidData, error) {
 	ctx := getContext()
 	collection := getCollection()
 
-	if len(id) == 0 {
+	if len(region) == 0 {
 		return nil, nil
 	}
 
 	var data models.CovidData
 
-	if err := collection.FindOne(ctx, bson.M{"region": id}).Decode(&data); err != nil {
+	if err := collection.FindOne(ctx, bson.M{"region": region}).Decode(&data); err != nil {
 		return nil, err
 	}
 

@@ -23,6 +23,7 @@ func init() {
 	}
 }
 
+// RedisCache Config of a cache instance
 type RedisCache struct {
 	ttl    time.Duration
 	prefix string
@@ -30,6 +31,7 @@ type RedisCache struct {
 
 type FetchCallback func() (interface{}, error)
 
+// CreateRedisCache Create a new redis cache
 func CreateRedisCache(ttl time.Duration, prefix string) *RedisCache {
 	return &RedisCache{
 		ttl:    ttl,
@@ -37,6 +39,7 @@ func CreateRedisCache(ttl time.Duration, prefix string) *RedisCache {
 	}
 }
 
+// Get Gets value from cache, else uses callback in case of cache miss & updates the cache
 func (rCache *RedisCache) Get(ctx context.Context, key string, v interface{}, callback FetchCallback) (interface{}, error) {
 	rKey := rCache.prepareKey(key)
 
@@ -46,13 +49,13 @@ func (rCache *RedisCache) Get(ctx context.Context, key string, v interface{}, ca
 		}
 	}
 
-	data, err := callback()
+	data, err := callback() // Fetch value due to cache miss
 
 	if err != nil {
 		return nil, err
 	}
 
-	rCache.set(ctx, rKey, data)
+	rCache.set(ctx, rKey, data) // update the cache
 
 	return data, nil
 }
@@ -61,6 +64,7 @@ func (rCache *RedisCache) prepareKey(key string) string {
 	return rCache.prefix + ":" + key
 }
 
+// Set value in the cache
 func (rCache *RedisCache) set(ctx context.Context, key string, v interface{}) {
 	data, err := json.Marshal(v)
 
@@ -74,6 +78,7 @@ func (rCache *RedisCache) set(ctx context.Context, key string, v interface{}) {
 	}
 }
 
+// RemoveKeys Remove keys from cache
 func (rCache *RedisCache) RemoveKeys(ctx context.Context, keys []string) error {
 	var rKeys []string
 

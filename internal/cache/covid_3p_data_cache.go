@@ -14,12 +14,14 @@ func init() {
 	covidDataCache = CreateRedisCache(time.Minute*30, "covIn")
 }
 
+// GetCovidDataForRegion Get covid data for a region from cache
 func GetCovidDataForRegion(region string) (*models.CovidData, error) {
 	if len(region) == 0 {
 		return nil, nil
 	}
 
 	res, err := covidDataCache.Get(context.TODO(), region, &models.CovidData{}, func() (interface{}, error) {
+		// cache miss
 		return dao.GetCovidDataForRegion(region)
 	})
 
@@ -36,6 +38,7 @@ func GetCovidDataForRegion(region string) (*models.CovidData, error) {
 	return data, nil
 }
 
+// GetCovidDataForRegions Get covid data for regions from cache
 func GetCovidDataForRegions(id []string) ([]models.CovidData, error) {
 	var covidData []models.CovidData
 
@@ -50,6 +53,7 @@ func GetCovidDataForRegions(id []string) ([]models.CovidData, error) {
 	return covidData, nil
 }
 
+// ResetCovidDataCache Reset covid data cache
 func ResetCovidDataCache(covidData []models.CovidData) error {
 	var keys []string
 
