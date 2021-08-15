@@ -17,7 +17,6 @@ import (
 // @description Get covid data based on your geo-location in India
 // @contact.name Arpit Bhatnagar
 // @contact.email arpitbhatnagar10@gmail.com
-// @host localhost:8000
 // @BasePath /
 func StartServer() {
 	app := echo.New()
