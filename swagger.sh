@@ -1,3 +1,3 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 swag init -g server.go --parseInternal -d ./internal

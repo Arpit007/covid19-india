@@ -13,7 +13,6 @@ type CovidData struct {
 	ConfirmedCases   int64     `json:"confirmedCases,string,omitempty"`
 	Deaths           int64     `json:"deaths,string,omitempty"`
 	Recovered        int64     `json:"recovered,string,omitempty"`
-	RemoteSyncTime   time.Time `json:"remoteSyncTime"`
 	CreatedAt        time.Time `bson:"created_at" json:"-"`
 	UpdatedAt        time.Time `bson:"updated_at" json:"updatedAt"`
 }

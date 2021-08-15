@@ -9,21 +9,21 @@ import (
 
 // FetchCovid3pData Fetches Covid Data from 3rd Party API
 func FetchCovid3pData() ([]models.Covid3pData, error) {
-	client := utils.GetClient(time.Second * 10)
+	client := utils.GetClient(10 * time.Second)
 
-	res, err := client.Get("https://data.covid19india.org/data.json")
+	res, err := client.Get("https://www.mohfw.gov.in/data/datanew.json")
 	if err != nil {
 		return nil, err
 	}
 
-	var data models.Covid3pDataResponse
+	var data []models.Covid3pData
 	if err := utils.DecodeResponseBody(res, &data); err != nil {
 		return nil, err
 	}
 
-	if len(data.StateWise) == 0 {
+	if len(data) == 0 {
 		return nil, errors.New("unable to fetch covid 19 data")
 	}
 
-	return data.StateWise, nil
+	return data, nil
 }

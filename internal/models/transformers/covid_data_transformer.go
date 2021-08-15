@@ -8,7 +8,8 @@ import (
 var IstTimeZone *time.Location
 
 func init() {
-	IstTimeZone, _ = time.LoadLocation("Asia/Kolkata")
+	secondsDelta := int((5*time.Hour + 30*time.Minute).Seconds()) // IST: +05:30
+	IstTimeZone = time.FixedZone("IST", secondsDelta)
 }
 
 // ToCovidRegionResponse Transform CovidData to API response CovidRegionResponse
@@ -19,7 +20,6 @@ func ToCovidRegionResponse(data *models.CovidData) *models.CovidRegionResponse {
 		ConfirmedCases: data.ConfirmedCases,
 		Deaths:         data.Deaths,
 		Recovered:      data.Recovered,
-		RemoteSyncTime: data.RemoteSyncTime.In(IstTimeZone).Format(time.RFC1123),
 	}
 }
 

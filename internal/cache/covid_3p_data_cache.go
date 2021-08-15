@@ -11,7 +11,7 @@ import (
 var covidDataCache *RedisCache
 
 func init() {
-	covidDataCache = CreateRedisCache(time.Minute*30, "covIn")
+	covidDataCache = CreateRedisCache(30*time.Minute, "covIn")
 }
 
 // GetCovidDataForRegion Get covid data for a region from cache

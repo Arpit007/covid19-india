@@ -148,10 +148,6 @@ var doc = `{
                 "region": {
                     "description": "Data Region",
                     "type": "string"
-                },
-                "remoteSyncTime": {
-                    "description": "Instant at which data was updated by 3rd Party Data Provider",
-                    "type": "string"
                 }
             }
         },

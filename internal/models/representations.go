@@ -7,7 +7,6 @@ type CovidRegionResponse struct {
 	ConfirmedCases int64  `json:"confirmedCases,string,omitempty"` // Total Confirmed Cases
 	Deaths         int64  `json:"deaths,string,omitempty"`         // Total Deaths
 	Recovered      int64  `json:"recovered,string,omitempty"`      // Total Recovered
-	RemoteSyncTime string `json:"remoteSyncTime"`                  // Instant at which data was updated by 3rd Party Data Provider
 }
 
 // GeoCovidDataResponse India & a State's covid data

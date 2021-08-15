@@ -11,7 +11,7 @@ import (
 
 // GetPlaceFromLatLng Fetches user's location info from geo coordinates
 func GetPlaceFromLatLng(lat float64, lng float64) (*models.GeoResponse, error) {
-	client := utils.GetClient(time.Second * 5)
+	client := utils.GetClient(5 * time.Second)
 
 	res, err := client.Get(prepareRequestUrl(lat, lng))
 	if err != nil {

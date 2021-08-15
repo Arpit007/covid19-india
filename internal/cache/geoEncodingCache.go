@@ -10,7 +10,7 @@ import (
 var geoCache *RedisCache
 
 func init() {
-	geoCache = CreateRedisCache(time.Minute*30, "geo")
+	geoCache = CreateRedisCache(30*time.Minute, "geo")
 }
 
 type geoState map[string]string
