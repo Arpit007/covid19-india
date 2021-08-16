@@ -2,11 +2,10 @@ package models
 
 // CovidRegionResponse Covid data for a region
 type CovidRegionResponse struct {
-	Region         string `json:"region"`                          // Data Region
-	ActiveCases    int64  `json:"activeCases,string,omitempty"`    // Total Active Cases
-	ConfirmedCases int64  `json:"confirmedCases,string,omitempty"` // Total Confirmed Cases
-	Deaths         int64  `json:"deaths,string,omitempty"`         // Total Deaths
-	Recovered      int64  `json:"recovered,string,omitempty"`      // Total Recovered
+	ActiveCases    int64 `json:"activeCases,string,omitempty"`    // Total Active Cases
+	ConfirmedCases int64 `json:"confirmedCases,string,omitempty"` // Total Confirmed Cases
+	Deaths         int64 `json:"deaths,string,omitempty"`         // Total Deaths
+	Recovered      int64 `json:"recovered,string,omitempty"`      // Total Recovered
 }
 
 // GeoCovidDataResponse India & a State's covid data
@@ -29,6 +28,6 @@ type HealthCheckResponse struct {
 
 // ErrorResponse Error message response
 type ErrorResponse struct {
-	Status  string `json:"status"`  // Error
+	Status  string `json:"status"`  // Status
 	Message string `json:"message"` // Error Message
 }

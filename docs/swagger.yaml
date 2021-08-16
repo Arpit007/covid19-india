@@ -18,9 +18,6 @@ definitions:
         description: Total Recovered
         example: "0"
         type: string
-      region:
-        description: Data Region
-        type: string
     type: object
   models.DataIngestResponse:
     properties:
@@ -37,7 +34,7 @@ definitions:
         description: Error Message
         type: string
       status:
-        description: Error
+        description: Status
         type: string
     type: object
   models.GeoCovidDataResponse:
@@ -85,11 +82,15 @@ paths:
       parameters:
       - description: Latitude
         in: query
+        maximum: 90
+        minimum: -90
         name: lat
         required: true
         type: number
       - description: Longitude
         in: query
+        maximum: 180
+        minimum: -180
         name: lng
         required: true
         type: number

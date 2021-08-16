@@ -66,8 +66,8 @@ func (self CovidDataController) refreshData(c echo.Context) error {
 // @Summary Get Covid Data for State
 // @Description Get India & State's covid data based on geo-location
 // @Tags covidApi
-// @Param lat query float32 true "Latitude"
-// @Param lng query float32 true "Longitude"
+// @Param lat query float32 true "Latitude" minimum(-90) maximum(90)
+// @Param lng query float32 true "Longitude" minimum(-180) maximum(180)
 // @Produce  json
 // @Success 201 {object} models.GeoCovidDataResponse
 // @Failure 400 {object} models.ErrorResponse

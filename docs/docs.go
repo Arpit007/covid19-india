@@ -58,6 +58,8 @@ var doc = `{
                 "summary": "Get Covid Data for State",
                 "parameters": [
                     {
+                        "maximum": 90,
+                        "minimum": -90,
                         "type": "number",
                         "description": "Latitude",
                         "name": "lat",
@@ -65,6 +67,8 @@ var doc = `{
                         "required": true
                     },
                     {
+                        "maximum": 180,
+                        "minimum": -180,
                         "type": "number",
                         "description": "Longitude",
                         "name": "lng",
@@ -144,10 +148,6 @@ var doc = `{
                     "description": "Total Recovered",
                     "type": "string",
                     "example": "0"
-                },
-                "region": {
-                    "description": "Data Region",
-                    "type": "string"
                 }
             }
         },
@@ -172,7 +172,7 @@ var doc = `{
                     "type": "string"
                 },
                 "status": {
-                    "description": "Error",
+                    "description": "Status",
                     "type": "string"
                 }
             }
