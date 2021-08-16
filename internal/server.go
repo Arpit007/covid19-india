@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
 	_ "github.com/swaggo/swag"
+	"net/http"
 )
 
 // StartServer godoc
@@ -38,8 +39,15 @@ func StartServer() {
 
 func registerRoutes(e *echo.Echo) {
 	// Register Swagger routes
+	e.GET("/", index)
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	// Register Index Controller
 	new(controller.IndexController).RegisterRoutes(e)
+}
+
+// Index /
+// Redirect to swagger page
+func index(c echo.Context) error {
+	return c.Redirect(http.StatusMovedPermanently, "/swagger/index.html")
 }
