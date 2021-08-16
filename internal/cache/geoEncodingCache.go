@@ -2,7 +2,7 @@ package cache
 
 import (
 	"context"
-	"covid19-india/internal/helpers"
+	helper3p "covid19-india/internal/third_party_helpers"
 	"fmt"
 	"time"
 )
@@ -21,7 +21,7 @@ func GetStateFromLatLong(lat float64, lng float64) (string, error) {
 
 	res, err := geoCache.Get(context.TODO(), key, &geoState{}, func() (interface{}, error) {
 		// cache miss
-		if state, err := helpers.GetStateFromLatLong(lat, lng); err != nil {
+		if state, err := helper3p.GetStateFromLatLong(lat, lng); err != nil {
 			return nil, err
 		} else {
 			return &geoState{"State": state}, nil

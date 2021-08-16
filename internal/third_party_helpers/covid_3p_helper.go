@@ -1,14 +1,14 @@
-package helpers
+package third_party_helpers
 
 import (
-	"covid19-india/internal/models"
+	models3p "covid19-india/internal/models/third_party"
 	"covid19-india/internal/utils"
 	"errors"
 	"time"
 )
 
 // FetchCovid3pData Fetches Covid Data from 3rd Party API
-func FetchCovid3pData() ([]models.Covid3pData, error) {
+func FetchCovid3pData() ([]models3p.Covid3pData, error) {
 	client := utils.GetClient(10 * time.Second)
 
 	res, err := client.Get("https://www.mohfw.gov.in/data/datanew.json")
@@ -16,7 +16,7 @@ func FetchCovid3pData() ([]models.Covid3pData, error) {
 		return nil, err
 	}
 
-	var data []models.Covid3pData
+	var data []models3p.Covid3pData
 	if err := utils.DecodeResponseBody(res, &data); err != nil {
 		return nil, err
 	}

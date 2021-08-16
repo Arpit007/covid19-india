@@ -12,6 +12,14 @@ import (
 
 var redisClient *redis.Client
 
+// RedisCache Config of a cache instance
+type RedisCache struct {
+	ttl    time.Duration
+	prefix string
+}
+
+type FetchCallback func() (interface{}, error)
+
 func init() {
 	u, err := url.Parse(config.ENV.RedisUri)
 
@@ -19,19 +27,10 @@ func init() {
 		logrus.Fatal("Error parsing redis uri ", err)
 	}
 
-	var password string
-	p, isSet := u.User.Password()
-
-	if isSet {
-		password = p
-	} else {
-		password = ""
-	}
-
 	redisClient = redis.NewClient(&redis.Options{
 		Addr:     u.Host,
 		Username: u.User.Username(),
-		Password: password,
+		Password: getPasswordFromURL(u),
 		DB:       0,
 	})
 
@@ -40,13 +39,15 @@ func init() {
 	}
 }
 
-// RedisCache Config of a cache instance
-type RedisCache struct {
-	ttl    time.Duration
-	prefix string
-}
+func getPasswordFromURL(url *url.URL) string {
+	p, isSet := url.User.Password()
 
-type FetchCallback func() (interface{}, error)
+	if isSet {
+		return p
+	}
+
+	return ""
+}
 
 // CreateRedisCache Create a new redis cache
 func CreateRedisCache(ttl time.Duration, prefix string) *RedisCache {
@@ -60,29 +61,33 @@ func CreateRedisCache(ttl time.Duration, prefix string) *RedisCache {
 func (rCache *RedisCache) Get(ctx context.Context, key string, v interface{}, callback FetchCallback) (interface{}, error) {
 	rKey := rCache.prepareKey(key)
 
+	// Fetch from redis
 	if res, err := redisClient.Get(ctx, rKey).Bytes(); err == nil {
 		if err := json.Unmarshal(res, v); err == nil {
 			return v, nil
 		}
 	}
 
-	data, err := callback() // Fetch value due to cache miss
+	data, err := callback() // Cache miss, use callback to get value
 
 	if err != nil {
 		return nil, err
 	}
 
-	go rCache.set(ctx, rKey, data) // update the cache
+	go rCache.Set(ctx, key, data) // update the cache
 
 	return data, nil
 }
 
+// Prepare redis cache key
 func (rCache *RedisCache) prepareKey(key string) string {
-	return rCache.prefix + ":" + key
+	return rCache.prefix + ":" + key // To avoid collision in keys of different caches
 }
 
 // Set value in the cache
-func (rCache *RedisCache) set(ctx context.Context, key string, v interface{}) {
+func (rCache *RedisCache) Set(ctx context.Context, key string, v interface{}) {
+	rKey := rCache.prepareKey(key)
+
 	data, err := json.Marshal(v)
 
 	if err != nil {
@@ -90,8 +95,8 @@ func (rCache *RedisCache) set(ctx context.Context, key string, v interface{}) {
 		return
 	}
 
-	if _, err := redisClient.SetEX(ctx, key, data, rCache.ttl).Result(); err != nil {
-		logrus.Error("Failed to update cache item " + key)
+	if _, err := redisClient.SetEX(ctx, rKey, data, rCache.ttl).Result(); err != nil {
+		logrus.Error("Failed to update cache item ", key)
 	}
 }
 

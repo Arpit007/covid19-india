@@ -19,15 +19,6 @@ definitions:
         example: "0"
         type: string
     type: object
-  models.DataIngestResponse:
-    properties:
-      message:
-        description: Message
-        type: string
-      updatedAt:
-        description: Data Updated At
-        type: string
-    type: object
   models.ErrorResponse:
     properties:
       message:
@@ -49,10 +40,9 @@ definitions:
         $ref: '#/definitions/models.CovidRegionResponse'
         description: State's covid data
     type: object
-  models.HealthCheckResponse:
+  models.SimpleMessageResponse:
     properties:
-      status:
-        description: Status of server
+      message:
         type: string
     type: object
 info:
@@ -72,11 +62,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.HealthCheckResponse'
+            $ref: '#/definitions/models.SimpleMessageResponse'
       summary: Server's health-check
       tags:
       - healthcheck
-  /v1/data/geo:
+  /v1/covid/geo:
     get:
       description: Get India & State's covid data based on geo-location
       parameters:
@@ -112,7 +102,7 @@ paths:
       summary: Get Covid Data for State
       tags:
       - covidApi
-  /v1/data/refresh:
+  /v1/covid/refresh:
     post:
       description: Fetches and persists India's covid 19 data in DB
       produces:
@@ -121,7 +111,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.DataIngestResponse'
+            $ref: '#/definitions/models.SimpleMessageResponse'
         "500":
           description: Internal Server Error
           schema:

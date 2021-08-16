@@ -1,25 +1,18 @@
 package controller
 
 import (
-	"covid19-india/internal/cache"
-	"covid19-india/internal/dao"
 	"covid19-india/internal/helpers"
 	"covid19-india/internal/models"
-	"covid19-india/internal/models/transformers"
 	"covid19-india/internal/utils"
 	"errors"
 	"github.com/labstack/echo/v4"
-	"github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
-	"time"
 )
 
-type CovidDataController struct{}
+type CovidInfoController struct{}
 
-const indiaRegion = "India"
-
-func (self CovidDataController) RegisterRoutes(g *echo.Group) {
+func (self CovidInfoController) RegisterRoutes(g *echo.Group) {
 	// Register routes
 	g.POST("/refresh", self.refreshData)
 	g.GET("/geo", self.getCovidDataByGeo)
@@ -30,34 +23,15 @@ func (self CovidDataController) RegisterRoutes(g *echo.Group) {
 // @Description Fetches and persists India's covid 19 data in DB
 // @Tags covidApi
 // @Produce  json
-// @Success 201 {object} models.DataIngestResponse
+// @Success 201 {object} models.SimpleMessageResponse
 // @Failure 500 {object} models.ErrorResponse
-// @Router /v1/data/refresh [post]
-func (self CovidDataController) refreshData(c echo.Context) error {
-	data, err := helpers.FetchCovid3pData()
-
-	if err != nil {
+// @Router /v1/covid/refresh [post]
+func (self CovidInfoController) refreshData(c echo.Context) error {
+	if err := helpers.RefreshCovidData(); err != nil {
 		return utils.HandleError(err, http.StatusInternalServerError, c)
 	}
 
-	if len(data) == 0 {
-		return utils.HandleError(errors.New("no covid data found from remote"), http.StatusInternalServerError, c)
-	}
-
-	covidData, err := dao.PersistCovidData(data)
-
-	if err != nil {
-		return utils.HandleError(err, http.StatusInternalServerError, c)
-	}
-
-	go func() {
-		if err := cache.ResetCovidDataCache(covidData); err != nil {
-			logrus.Error("Error resetting cache ", err)
-		}
-	}()
-
-	updatedAt := time.Now().In(transformers.IstTimeZone).Format(time.RFC1123)
-	res := models.DataIngestResponse{Message: "Data ingested successfully", UpdatedAt: updatedAt}
+	res := models.SimpleMessageResponse{Message: "Data ingested successfully"}
 
 	return c.JSON(http.StatusCreated, res)
 }
@@ -72,36 +46,33 @@ func (self CovidDataController) refreshData(c echo.Context) error {
 // @Success 201 {object} models.GeoCovidDataResponse
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
-// @Router /v1/data/geo [get]
-func (self CovidDataController) getCovidDataByGeo(c echo.Context) error {
-	lat, err := strconv.ParseFloat(c.QueryParam("lat"), 64)
-	if err != nil || lat < -90 || lat > 90 { // Validation
+// @Router /v1/covid/geo [get]
+func (self CovidInfoController) getCovidDataByGeo(c echo.Context) error {
+	lat, err := strconv.ParseFloat(c.QueryParam("lat"), 32)
+
+	// Validate latitude
+	if err != nil || !validateLatitude(lat) {
 		return utils.HandleError(errors.New("invalid latitude"), http.StatusBadRequest, c)
 	}
 
-	lng, err := strconv.ParseFloat(c.QueryParam("lng"), 64)
-	if err != nil || lng < -180 || lng > 180 { // Validation
+	lng, err := strconv.ParseFloat(c.QueryParam("lng"), 32)
+
+	// Validate longitude
+	if err != nil || !validateLongitude(lng) {
 		return utils.HandleError(errors.New("invalid longitude"), http.StatusBadRequest, c)
 	}
 
-	// Fetch user's state from geo-coordinates
-	//state, err := cache.GetStateFromLatLong(lat, lng)
-	state, err := helpers.GetStateFromLatLong(lat, lng)
-
-	if err != nil {
+	if data, err := helpers.GetCovidDataForUserGeo(lat, lng); err != nil {
 		return utils.HandleError(err, http.StatusInternalServerError, c)
+	} else {
+		return c.JSON(http.StatusOK, data)
 	}
+}
 
-	// Get covid data for state & India
-	data, err := cache.GetCovidDataForRegions([]string{state, indiaRegion})
+func validateLatitude(lat float64) bool {
+	return lat >= -90 && lat <= 90
+}
 
-	if err != nil {
-		return utils.HandleError(err, http.StatusInternalServerError, c)
-	}
-
-	if len(data) == 0 {
-		return utils.HandleError(errors.New("no data found"), http.StatusInternalServerError, c)
-	}
-
-	return c.JSON(http.StatusOK, transformers.ToGeoCovidDataResponse(data))
+func validateLongitude(lng float64) bool {
+	return lng >= -180 && lng <= 180
 }

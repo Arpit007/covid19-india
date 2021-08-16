@@ -24,7 +24,7 @@ func init() {
 	}
 }
 
-// GetMandatoryEnvValue Get Mandatory Environment value. Fatal if it is not present
+// GetMandatoryEnvValue Get Mandatory Environment value. Fatal if not found
 func GetMandatoryEnvValue(key string) string {
 	value := GetEnvValue(key)
 

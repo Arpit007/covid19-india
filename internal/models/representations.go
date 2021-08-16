@@ -15,15 +15,9 @@ type GeoCovidDataResponse struct {
 	LastUpdatedAt string              `json:"last_updated_at"` // Data last updated at
 }
 
-// DataIngestResponse Response on successful data ingestion
-type DataIngestResponse struct {
-	Message   string `json:"message"`   // Message
-	UpdatedAt string `json:"updatedAt"` // Data Updated At
-}
-
-// HealthCheckResponse Health-check response
-type HealthCheckResponse struct {
-	Status string `json:"status"` // Status of server
+// SimpleMessageResponse Response with a string message
+type SimpleMessageResponse struct {
+	Message string `json:"message"`
 }
 
 // ErrorResponse Error message response

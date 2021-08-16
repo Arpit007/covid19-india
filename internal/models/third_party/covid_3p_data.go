@@ -1,6 +1,9 @@
-package models
+package third_party
 
-import "time"
+import (
+	"covid19-india/internal/models"
+	"time"
+)
 
 // Covid3pData 3rd party API Model
 // Provides Covid data for a given state/region
@@ -13,7 +16,7 @@ type Covid3pData struct {
 }
 
 // ToCovidData Transform 3rd party API model to app's covid data model
-func (data *Covid3pData) ToCovidData() (*CovidData, error) {
+func (data *Covid3pData) ToCovidData() (*models.CovidData, error) {
 	currentTime := time.Now()
 
 	var region string
@@ -25,7 +28,7 @@ func (data *Covid3pData) ToCovidData() (*CovidData, error) {
 		region = data.State
 	}
 
-	model := &CovidData{
+	model := &models.CovidData{
 		Region:         region,
 		ActiveCases:    data.Active,
 		ConfirmedCases: data.Confirmed,

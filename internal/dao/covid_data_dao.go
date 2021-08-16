@@ -37,34 +37,26 @@ func getCollection() *mgm.Collection {
 }
 
 // PersistCovidData Bulk persist all covid data
-func PersistCovidData(covid3pDataset []models.Covid3pData) ([]models.CovidData, error) {
+func PersistCovidData(covidData []models.CovidData) error {
 	ctx := getContext()
 	collection := getCollection()
 
-	var covidData []models.CovidData
 	var operations []mongo.WriteModel
 
-	for _, covid3pData := range covid3pDataset {
-		data, err := covid3pData.ToCovidData()
-
-		if err != nil {
-			return nil, err
-		}
-
+	for _, data := range covidData {
 		operation := mongo.NewUpdateOneModel()
 		operation.SetFilter(bson.M{"region": data.Region})
 		operation.SetUpdate(bson.M{"$set": data})
 		operation.SetUpsert(true)
 
 		operations = append(operations, operation)
-		covidData = append(covidData, *data)
 	}
 
 	if _, err := collection.BulkWrite(ctx, operations); err != nil {
-		return nil, err
+		return err
 	}
 
-	return covidData, nil
+	return nil
 }
 
 // GetCovidDataForRegions Get covid data for multiple regions

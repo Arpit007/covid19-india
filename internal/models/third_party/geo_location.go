@@ -1,4 +1,4 @@
-package models
+package third_party
 
 // Address 3rd Party Reverse geocoding response model
 type Address struct {

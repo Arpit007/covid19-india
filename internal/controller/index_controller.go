@@ -14,7 +14,7 @@ func (self IndexController) RegisterRoutes(e *echo.Echo) {
 	e.GET("/healthcheck", healthCheck)
 
 	// Register Controllers
-	new(CovidDataController).RegisterRoutes(e.Group("/v1/data"))
+	new(CovidInfoController).RegisterRoutes(e.Group("/v1/covid"))
 }
 
 // healthCheck godoc
@@ -22,8 +22,8 @@ func (self IndexController) RegisterRoutes(e *echo.Echo) {
 // @Description Check server's health
 // @Tags healthcheck
 // @Produce  json
-// @Success 200 {object} models.HealthCheckResponse
+// @Success 200 {object} models.SimpleMessageResponse
 // @Router /healthcheck [get]
 func healthCheck(c echo.Context) error {
-	return c.JSON(http.StatusOK, models.HealthCheckResponse{Status: "Server Running"})
+	return c.JSON(http.StatusOK, models.SimpleMessageResponse{Message: "Server Running"})
 }

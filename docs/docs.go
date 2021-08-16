@@ -40,13 +40,13 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.HealthCheckResponse"
+                            "$ref": "#/definitions/models.SimpleMessageResponse"
                         }
                     }
                 }
             }
         },
-        "/v1/data/geo": {
+        "/v1/covid/geo": {
             "get": {
                 "description": "Get India \u0026 State's covid data based on geo-location",
                 "produces": [
@@ -98,7 +98,7 @@ var doc = `{
                 }
             }
         },
-        "/v1/data/refresh": {
+        "/v1/covid/refresh": {
             "post": {
                 "description": "Fetches and persists India's covid 19 data in DB",
                 "produces": [
@@ -112,7 +112,7 @@ var doc = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.DataIngestResponse"
+                            "$ref": "#/definitions/models.SimpleMessageResponse"
                         }
                     },
                     "500": {
@@ -151,19 +151,6 @@ var doc = `{
                 }
             }
         },
-        "models.DataIngestResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "description": "Message",
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "description": "Data Updated At",
-                    "type": "string"
-                }
-            }
-        },
         "models.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -194,11 +181,10 @@ var doc = `{
                 }
             }
         },
-        "models.HealthCheckResponse": {
+        "models.SimpleMessageResponse": {
             "type": "object",
             "properties": {
-                "status": {
-                    "description": "Status of server",
+                "message": {
                     "type": "string"
                 }
             }

@@ -1,8 +1,8 @@
-package helpers
+package third_party_helpers
 
 import (
 	"covid19-india/internal/config"
-	"covid19-india/internal/models"
+	models3p "covid19-india/internal/models/third_party"
 	"covid19-india/internal/utils"
 	"errors"
 	"fmt"
@@ -10,7 +10,7 @@ import (
 )
 
 // GetPlaceFromLatLng Fetches user's location info from geo coordinates
-func GetPlaceFromLatLng(lat float64, lng float64) (*models.GeoResponse, error) {
+func GetPlaceFromLatLng(lat float64, lng float64) (*models3p.GeoResponse, error) {
 	client := utils.GetClient(5 * time.Second)
 
 	res, err := client.Get(prepareRequestUrl(lat, lng))
@@ -18,7 +18,7 @@ func GetPlaceFromLatLng(lat float64, lng float64) (*models.GeoResponse, error) {
 		return nil, err
 	}
 
-	var data models.GeoResponse
+	var data models3p.GeoResponse
 	if err := utils.DecodeResponseBody(res, &data); err != nil {
 		return nil, err
 	}
