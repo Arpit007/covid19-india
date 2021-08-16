@@ -62,8 +62,8 @@
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "Success",
                         "schema": {
                             "$ref": "#/definitions/models.GeoCovidDataResponse"
                         }
@@ -95,7 +95,7 @@
                 "summary": "Populate Covid19 Data",
                 "responses": {
                     "201": {
-                        "description": "Created",
+                        "description": "Data refreshed",
                         "schema": {
                             "$ref": "#/definitions/models.SimpleMessageResponse"
                         }
@@ -133,6 +133,10 @@
                     "description": "Total Recovered",
                     "type": "string",
                     "example": "0"
+                },
+                "region": {
+                    "description": "Data Region",
+                    "type": "string"
                 }
             }
         },

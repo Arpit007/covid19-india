@@ -77,8 +77,8 @@ var doc = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "Success",
                         "schema": {
                             "$ref": "#/definitions/models.GeoCovidDataResponse"
                         }
@@ -110,7 +110,7 @@ var doc = `{
                 "summary": "Populate Covid19 Data",
                 "responses": {
                     "201": {
-                        "description": "Created",
+                        "description": "Data refreshed",
                         "schema": {
                             "$ref": "#/definitions/models.SimpleMessageResponse"
                         }
@@ -148,6 +148,10 @@ var doc = `{
                     "description": "Total Recovered",
                     "type": "string",
                     "example": "0"
+                },
+                "region": {
+                    "description": "Data Region",
+                    "type": "string"
                 }
             }
         },

@@ -18,6 +18,9 @@ definitions:
         description: Total Recovered
         example: "0"
         type: string
+      region:
+        description: Data Region
+        type: string
     type: object
   models.ErrorResponse:
     properties:
@@ -87,8 +90,8 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: Success
           schema:
             $ref: '#/definitions/models.GeoCovidDataResponse'
         "400":
@@ -109,7 +112,7 @@ paths:
       - application/json
       responses:
         "201":
-          description: Created
+          description: Data refreshed
           schema:
             $ref: '#/definitions/models.SimpleMessageResponse'
         "500":

@@ -15,6 +15,7 @@ func init() {
 // ToCovidRegionResponse Transform CovidData to API response CovidRegionResponse
 func ToCovidRegionResponse(data *models.CovidData) *models.CovidRegionResponse {
 	return &models.CovidRegionResponse{
+		Region:         data.Region,
 		ActiveCases:    data.ActiveCases,
 		ConfirmedCases: data.ConfirmedCases,
 		Deaths:         data.Deaths,

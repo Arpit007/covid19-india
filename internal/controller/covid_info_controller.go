@@ -23,7 +23,7 @@ func (self CovidInfoController) RegisterRoutes(g *echo.Group) {
 // @Description Fetches and persists India's covid 19 data in DB
 // @Tags covidApi
 // @Produce  json
-// @Success 201 {object} models.SimpleMessageResponse
+// @Success 201 {object} models.SimpleMessageResponse "Data refreshed"
 // @Failure 500 {object} models.ErrorResponse
 // @Router /v1/covid/refresh [post]
 func (self CovidInfoController) refreshData(c echo.Context) error {
@@ -43,7 +43,7 @@ func (self CovidInfoController) refreshData(c echo.Context) error {
 // @Param lat query float32 true "Latitude" minimum(-90) maximum(90)
 // @Param lng query float32 true "Longitude" minimum(-180) maximum(180)
 // @Produce  json
-// @Success 201 {object} models.GeoCovidDataResponse
+// @Success 200 {object} models.GeoCovidDataResponse "Success"
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
 // @Router /v1/covid/geo [get]
