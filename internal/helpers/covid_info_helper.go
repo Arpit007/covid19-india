@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"context"
 	"covid19-india/internal/cache"
 	"covid19-india/internal/dao"
 	"covid19-india/internal/models"
@@ -11,7 +12,7 @@ import (
 )
 
 // RefreshCovidData Fetch the Covid data and persist in DB
-func RefreshCovidData() error {
+func RefreshCovidData(ctx context.Context) error {
 	// Fetch covid data from third party
 	covid3pData, err := helper3p.FetchCovid3pData()
 
@@ -33,13 +34,13 @@ func RefreshCovidData() error {
 	}
 
 	// Persist data
-	if err := dao.PersistCovidData(covidData); err != nil {
+	if err := dao.PersistCovidData(ctx, covidData); err != nil {
 		return err
 	}
 
 	// Reset the cache
 	go func() {
-		if err := cache.ResetCovidDataCache(covidData); err != nil {
+		if err := cache.ResetCovidDataCache(context.TODO(), covidData); err != nil {
 			logrus.Error("Error resetting cache ", err)
 		}
 	}()
@@ -48,7 +49,7 @@ func RefreshCovidData() error {
 }
 
 // GetCovidDataForUserGeo Get Covid data for user's state & India based on their geo-coordinates
-func GetCovidDataForUserGeo(lat float64, lng float64) (*models.GeoCovidDataResponse, error) {
+func GetCovidDataForUserGeo(ctx context.Context, lat float64, lng float64) (*models.GeoCovidDataResponse, error) {
 	// Get user's state from coordinates
 	state, err := helper3p.GetStateFromLatLong(lat, lng)
 
@@ -57,7 +58,7 @@ func GetCovidDataForUserGeo(lat float64, lng float64) (*models.GeoCovidDataRespo
 	}
 
 	// Get covid data for state & India
-	data, err := cache.GetCovidDataForRegions([]string{state, "India"})
+	data, err := cache.GetCovidDataForRegions(ctx, []string{state, "India"})
 
 	if err != nil {
 		return nil, err

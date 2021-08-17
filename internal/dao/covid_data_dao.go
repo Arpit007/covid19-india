@@ -28,17 +28,12 @@ func init() {
 	}
 }
 
-func getContext() context.Context {
-	return mgm.Ctx()
-}
-
 func getCollection() *mgm.Collection {
 	return mgm.CollectionByName(collectionId)
 }
 
 // PersistCovidData Bulk persist all covid data
-func PersistCovidData(covidData []models.CovidData) error {
-	ctx := getContext()
+func PersistCovidData(ctx context.Context, covidData []models.CovidData) error {
 	collection := getCollection()
 
 	var operations []mongo.WriteModel
@@ -60,8 +55,7 @@ func PersistCovidData(covidData []models.CovidData) error {
 }
 
 // GetCovidDataForRegions Get covid data for multiple regions
-func GetCovidDataForRegions(id []string) ([]models.CovidData, error) {
-	ctx := getContext()
+func GetCovidDataForRegions(ctx context.Context, id []string) ([]models.CovidData, error) {
 	collection := getCollection()
 
 	var operations []bson.M
@@ -95,8 +89,7 @@ func GetCovidDataForRegions(id []string) ([]models.CovidData, error) {
 }
 
 // GetCovidDataForRegion Get covid data for a region
-func GetCovidDataForRegion(region string) (*models.CovidData, error) {
-	ctx := getContext()
+func GetCovidDataForRegion(ctx context.Context, region string) (*models.CovidData, error) {
 	collection := getCollection()
 
 	if len(region) == 0 {

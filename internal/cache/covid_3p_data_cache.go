@@ -15,14 +15,14 @@ func init() {
 }
 
 // GetCovidDataForRegion Get covid data for a region from cache
-func GetCovidDataForRegion(region string) (*models.CovidData, error) {
+func GetCovidDataForRegion(ctx context.Context, region string) (*models.CovidData, error) {
 	if len(region) == 0 {
 		return nil, nil
 	}
 
-	res, err := covidDataCache.Get(context.TODO(), region, &models.CovidData{}, func() (interface{}, error) {
+	res, err := covidDataCache.Get(ctx, region, &models.CovidData{}, func(ctx context.Context) (interface{}, error) {
 		// cache miss
-		return dao.GetCovidDataForRegion(region)
+		return dao.GetCovidDataForRegion(ctx, region)
 	})
 
 	if err != nil {
@@ -39,11 +39,11 @@ func GetCovidDataForRegion(region string) (*models.CovidData, error) {
 }
 
 // GetCovidDataForRegions Get covid data for regions from cache
-func GetCovidDataForRegions(id []string) ([]models.CovidData, error) {
+func GetCovidDataForRegions(ctx context.Context, id []string) ([]models.CovidData, error) {
 	var covidData []models.CovidData
 
 	for _, region := range id {
-		if data, err := GetCovidDataForRegion(region); err != nil {
+		if data, err := GetCovidDataForRegion(ctx, region); err != nil {
 			return nil, err
 		} else {
 			covidData = append(covidData, *data)
@@ -54,12 +54,12 @@ func GetCovidDataForRegions(id []string) ([]models.CovidData, error) {
 }
 
 // ResetCovidDataCache Reset covid data cache
-func ResetCovidDataCache(covidData []models.CovidData) error {
+func ResetCovidDataCache(ctx context.Context, covidData []models.CovidData) error {
 	var keys []string
 
 	for _, data := range covidData {
 		keys = append(keys, data.Region)
 	}
 
-	return covidDataCache.RemoveKeys(context.TODO(), keys)
+	return covidDataCache.RemoveKeys(ctx, keys)
 }

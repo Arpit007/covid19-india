@@ -27,7 +27,7 @@ func (self CovidInfoController) RegisterRoutes(g *echo.Group) {
 // @Failure 500 {object} models.ErrorResponse
 // @Router /v1/covid/refresh [post]
 func (self CovidInfoController) refreshData(c echo.Context) error {
-	if err := helpers.RefreshCovidData(); err != nil {
+	if err := helpers.RefreshCovidData(c.Request().Context()); err != nil {
 		return utils.HandleError(err, http.StatusInternalServerError, c)
 	}
 
@@ -62,7 +62,7 @@ func (self CovidInfoController) getCovidDataByGeo(c echo.Context) error {
 		return utils.HandleError(errors.New("invalid longitude"), http.StatusBadRequest, c)
 	}
 
-	if data, err := helpers.GetCovidDataForUserGeo(lat, lng); err != nil {
+	if data, err := helpers.GetCovidDataForUserGeo(c.Request().Context(), lat, lng); err != nil {
 		return utils.HandleError(err, http.StatusInternalServerError, c)
 	} else {
 		return c.JSON(http.StatusOK, data)

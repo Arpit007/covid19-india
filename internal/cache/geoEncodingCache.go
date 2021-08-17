@@ -16,10 +16,11 @@ func init() {
 type geoState map[string]string
 
 // GetStateFromLatLong Fetches user's state (from geo coordinates) from cache
-func GetStateFromLatLong(lat float64, lng float64) (string, error) {
+// Unused due to large variations in coordinates, demonstrates the feature of drop in replacement of helper
+func GetStateFromLatLong(ctx context.Context, lat float64, lng float64) (string, error) {
 	key := fmt.Sprintf("%f,%f", lat, lng)
 
-	res, err := geoCache.Get(context.TODO(), key, &geoState{}, func() (interface{}, error) {
+	res, err := geoCache.Get(ctx, key, &geoState{}, func(ctx context.Context) (interface{}, error) {
 		// cache miss
 		if state, err := helper3p.GetStateFromLatLong(lat, lng); err != nil {
 			return nil, err

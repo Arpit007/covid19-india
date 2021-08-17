@@ -18,7 +18,7 @@ type RedisCache struct {
 	prefix string
 }
 
-type FetchCallback func() (interface{}, error)
+type FetchCallback func(ctx context.Context) (interface{}, error)
 
 func init() {
 	u, err := url.Parse(config.ENV.RedisUri)
@@ -68,13 +68,13 @@ func (rCache *RedisCache) Get(ctx context.Context, key string, v interface{}, ca
 		}
 	}
 
-	data, err := callback() // Cache miss, use callback to get value
+	data, err := callback(ctx) // Cache miss, use callback to get value
 
 	if err != nil {
 		return nil, err
 	}
 
-	go rCache.Set(ctx, key, data) // update the cache
+	go rCache.Set(context.TODO(), key, data) // update the cache
 
 	return data, nil
 }
